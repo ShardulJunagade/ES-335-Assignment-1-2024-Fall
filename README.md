@@ -14,7 +14,7 @@ This project involves Human Activity Recognition (HAR) using accelerometer data.
 
 ### Completed
 - **Data Preprocessing**: The scripts `CombineScript.py` and `MakeDataset.py` have been successfully executed to organize and split the dataset into training, testing, and validation sets.
-- **Exploratory Data Analysis**: Initial EDA has been performed. Specific steps completed include [brief description of the completed EDA step].
+- **Exploratory Data Analysis**: Initial EDA has been performed.
 
 ### To Do
 - **Continue EDA**:
@@ -44,15 +44,7 @@ This project involves Human Activity Recognition (HAR) using accelerometer data.
 - `data_collection.py`: Scripts for data collection and evaluation.
 
 ## How to Run
-1. Ensure you have the necessary dependencies installed (see `requirements.txt`).
-2. Place `CombineScript.py` and `MakeDataset.py` in the same folder as the UCI dataset.
-3. Run the scripts to preprocess the data:
-    ```bash
-    python CombineScript.py
-    python MakeDataset.py
-    ```
-4. For EDA, open `EDA.ipynb` in a Jupyter Notebook and run the cells.
-5. Follow the instructions in `decision_tree.py` and `prompt_engineering.py` to train and evaluate models.
+- [To be updated]
 
 ## Results
 - **EDA**: [Link to or description of visualizations and findings]
@@ -64,4 +56,4 @@ This project involves Human Activity Recognition (HAR) using accelerometer data.
 - The project will be updated as more tasks are completed.
 
 ## Contact
-For any questions or suggestions, please contact Soham Gaonkar at sohamgaonkar2005@gmail.com.
+For any questions or suggestions, please contact Soham Gaonkar at 23110314@iitgn.ac.in
