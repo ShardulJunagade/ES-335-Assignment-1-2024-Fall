@@ -2,3 +2,5 @@
 .DS_Store
 
 UCI HAR Dataset/
+
+venv/
