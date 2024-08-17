@@ -1,10 +1,8 @@
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #
-#                                   ES335- Machine Learning- Assignment 1
-#
-# This file is used to create the dataset for the mini-project. The dataset is created by reading the data from
-# the Combined folder. The data is then split into training, testing, and validation sets. This split is supposed
-# to be used for all the modeling purposes.
+# X_train is not explicitly saved to a file when the MakeDataset code is run.. It is created in memory and used for further processing within the script.
+#  If you need to save X_train (along with y_train and the test datasets) to a file for later use, you can do so using a library like numpy or pandas.
+#  Here is an example of how you can save the datasets to disk using numpy:
 #
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -86,10 +84,12 @@ print("Testing data shape: ",X_test.shape)
 # Create the directory if it doesn't exist
 os.makedirs('Saved_Dataset', exist_ok=True)
 
-# Save the datasets as NumPy arrays
+# Save the datasets as NumPy arrays / use can also use pandas(csv) for the same
 np.save('Saved_Dataset/X_train.npy', X_train)
 np.save('Saved_Dataset/X_test.npy', X_test)
 np.save('Saved_Dataset/y_train.npy', y_train)
 np.save('Saved_Dataset/y_test.npy', y_test)
 
 print("Datasets saved to disk.")
+
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
