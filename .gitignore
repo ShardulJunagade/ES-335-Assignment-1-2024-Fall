@@ -1,6 +1,6 @@
 *.pyc
 .DS_Store
 
-UCI HAR Dataset/
-
 venv/
+__pycache__/
+*.py[cod]
