@@ -6,6 +6,8 @@ There is no restriction on following the below template, these fucntions are her
 import numpy as np
 import pandas as pd
 
+
+
 def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
     """
     Function to perform one hot encoding on the input data
@@ -14,8 +16,8 @@ def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
     """
 
     X_encoded = pd.get_dummies(X)
-    
     return X_encoded
+
 
 
 def check_ifreal(y: pd.Series) -> bool:
@@ -42,6 +44,7 @@ def check_ifreal(y: pd.Series) -> bool:
     return False
 
 
+
 def entropy(Y: pd.Series) -> float:
     """
     Function to calculate the entropy
@@ -51,29 +54,130 @@ def entropy(Y: pd.Series) -> float:
     
     value_counts = Y.value_counts()
     total_count = Y.size
-
     prob = value_counts / total_count
-    entropy_value = -np.sum(prob * np.log2(prob))
+    entropy_value = -np.sum(prob * np.log2(prob + + 1e-10))
 
     return entropy_value
+
 
 
 def gini_index(Y: pd.Series) -> float:
     """
     Function to calculate the gini index
+
+    gini_index = 1 - sum(p_i^2)
     """
 
+    value_counts = Y.value_counts()
+    total_count = Y.size
+    probs = value_counts / total_count
+    gini_index_value = 1 - np.sum(probs ** 2)
+
+    return gini_index_value
 
 
-def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
+
+def mse(Y: pd.Series) -> float:
+    """
+    Function to calculate the root-mean-squared-error(rmse)
+
+    rmse = sqrt(sum((y_i - y)^2) / n)
+    """
+
+    Y_mean = Y.mean()
+    mse_value = np.sum((Y - Y_mean) ** 2) / Y.size
+
+    return mse_value
+
+
+
+def real_feature_thresholding(Y: pd.Series, attr: pd.Series, criterion_func) -> float:
+    """
+    Function to find the optimal threshold for a real feature
+
+    Returns the threshold value
+    """
+
+    sorted_attr = attr.sort_values()
+    # Find the split points by taking the average of consecutive values (midpoints)
+    split_points = (sorted_attr[:-1] + sorted_attr[1:]) / 2
+
+    best_threshold = None
+    best_gain = -np.inf
+
+    for threshold in split_points:
+        Y_left = Y[attr <= threshold]
+        Y_right = Y[attr > threshold]
+
+        if Y_left.empty or Y_right.empty:
+            continue
+
+        total_criterion = Y_left.size / Y.size * criterion_func(Y_left) + Y_right.size / Y.size * criterion_func(Y_right)
+
+        information_gain_value = criterion_func(Y) - total_criterion
+
+        if information_gain_value > best_gain:
+            best_threshold = threshold
+            best_gain = information_gain_value
+
+    return best_threshold
+
+
+
+def information_gain(Y: pd.Series, attr: pd.Series, criterion: str = "None") -> float:
     """
     Function to calculate the information gain using criterion (entropy, gini index or MSE)
+
+    information_gain = criterion(Y) - sum((Y_i.size / Y.size) * criterion(Y_i))
+
+    Raises:
+    - ValueError: If the criterion is not one of 'entropy', 'gini', or 'mse'.
     """
 
+    if criterion == "None":
+        # If the criterion is not provided, use 'mse' for real values and 'entropy' for discrete values
+        if check_ifreal(Y):
+            criterion = 'mse'
+        else:
+            criterion = 'entropy'
+
+    criterion_funcs = {
+        'entropy': entropy,
+        'gini': gini_index,
+        'mse': mse
+    }
+    
+    if criterion not in criterion_funcs:
+        raise ValueError("Criterion must be one of 'entropy', 'gini', or 'mse'")
+    
+    criterion_func = criterion_funcs[criterion]
+
+    # If the attribute is real, find the split points and calculate the information gain for each split point
+    if check_ifreal(attr):
+        threshold = real_feature_thresholding(Y, attr, criterion_func)
+        if threshold is None:
+            return 0  # No valid threshold found
+        Y_left = Y[attr <= threshold]
+        Y_right = Y[attr > threshold]
+
+        information_gain_value = criterion_func(Y) - (Y_left.size / Y.size * criterion_func(Y_left) + Y_right.size / Y.size * criterion_func(Y_right))
+        
+        return information_gain_value
+    
+    # If the attribute is discrete, calculate the information gain for each unique value of the attribute
+    total_criterion = 0
+
+    for value in attr.unique():
+        Y_i = Y[attr == value]
+        total_criterion += Y_i.size / Y.size * criterion_func(Y_i)
+
+    information_gain_value = criterion_func(Y) - total_criterion
+
+    return information_gain_value
 
 
 
-def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion, features: pd.Series):
+def opt_split_attribute(X: pd.DataFrame, y: pd.Series, features: pd.Series, criterion: str = "None"):
     """
     Function to find the optimal attribute to split about.
     If needed you can split this function into 2, one for discrete and one for real valued features.
@@ -86,6 +190,17 @@ def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion, features: pd.S
 
     # According to wheather the features are real or discrete valued and the criterion, find the attribute from the features series with the maximum information gain (entropy or varinace based on the type of output) or minimum gini index (discrete output).
 
+    best_feature = None
+    best_gain = -np.inf
+
+    for feature in features:
+        gain = information_gain(y, X[feature], criterion)
+
+        if gain > best_gain:
+            best_feature = feature
+            best_gain = gain
+
+    return best_feature
 
 
 
@@ -103,4 +218,15 @@ def split_data(X: pd.DataFrame, y: pd.Series, attribute, value):
 
     # Split the data based on a particular value of a particular attribute. You may use masking as a tool to split the data.
 
-  
+    if check_ifreal(X[attribute]):
+        X_left = X[X[attribute] <= value]
+        X_right = X[X[attribute] > value]
+
+    else:
+        X_left = X[X[attribute] == value]
+        X_right = X[X[attribute] != value]
+
+    y_left = y.loc[X_left.index]
+    y_right = y.loc[X_right.index]
+
+    return X_left, y_left, X_right, y_right
