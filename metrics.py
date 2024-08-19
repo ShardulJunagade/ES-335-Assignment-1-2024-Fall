@@ -40,15 +40,15 @@ def accuracy(y_hat: pd.Series, y: pd.Series) -> float:
 
     y_hat, y = validate_inputs(y_hat, y)
     
-    accuracy = (y_hat == y).sum() / y.size
-    return accuracy
+    accuracy_value = (y_hat == y).sum() / y.size
+    return accuracy_value
 
 
 def precision(y_hat: pd.Series, y: pd.Series, cls: Union[int, str]) -> float:
     """
     Function to calculate the precision
 
-    Precision = TP / (TP + FP).
+    Precision = TP / (TP + FP)
     TP: True Positives
     FP: False Positives
     """
@@ -57,16 +57,16 @@ def precision(y_hat: pd.Series, y: pd.Series, cls: Union[int, str]) -> float:
 
     TP = ((y_hat == cls) & (y == cls)).sum()
     FP = ((y_hat == cls) & (y != cls)).sum()
-    precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
+    precision_value = TP / (TP + FP) if (TP + FP) > 0 else 0.0
 
-    return precision
+    return precision_value
 
 
 def recall(y_hat: pd.Series, y: pd.Series, cls: Union[int, str]) -> float:
     """
     Function to calculate the recall
 
-    Recall = TP / (TP + FN).
+    Recall = TP / (TP + FN)
     TP: True Positives
     FN: False Negatives
     """
@@ -75,9 +75,9 @@ def recall(y_hat: pd.Series, y: pd.Series, cls: Union[int, str]) -> float:
 
     TP = ((y_hat == cls) & (y == cls)).sum()
     FN = ((y_hat != cls) & (y == cls)).sum()
-    recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
+    recall_value = TP / (TP + FN) if (TP + FN) > 0 else 0.0
 
-    return recall
+    return recall_value
     
 
 def rmse(y_hat: pd.Series, y: pd.Series) -> float:
@@ -89,10 +89,10 @@ def rmse(y_hat: pd.Series, y: pd.Series) -> float:
     
     y_hat, y = validate_inputs(y_hat, y)
 
-    rmse = ((y_hat - y) ** 2).sum() / y.size
-    rmse = rmse ** 0.5
+    rmse_value = ((y_hat - y) ** 2).sum() / y.size
+    rmse_value = rmse_value ** 0.5
 
-    return rmse
+    return rmse_value
 
 
 def mae(y_hat: pd.Series, y: pd.Series) -> float:
@@ -104,6 +104,6 @@ def mae(y_hat: pd.Series, y: pd.Series) -> float:
     
     y_hat, y = validate_inputs(y_hat, y)
 
-    mae = (y_hat - y).abs().sum() / y.size
+    mae_value = (y_hat - y).abs().sum() / y.size
 
-    return mae
+    return mae_value
