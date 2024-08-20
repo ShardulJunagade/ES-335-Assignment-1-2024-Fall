@@ -1,7 +1,12 @@
 # Virtual Environment
+venv
 venv/
 .venv/
+.venv
+.env
+env
 env/
+.env/
 ENV/
 
 # Python Bytecode Files
@@ -15,9 +20,6 @@ __pycache__/
 
 # Operating System Files
 .DS_Store
-
-# Environment Configuration Files
-.env/
 
 # Log Files
 *.log
