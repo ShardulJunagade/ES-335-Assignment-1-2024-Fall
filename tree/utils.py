@@ -124,7 +124,7 @@ def real_feature_thresholding(Y: pd.Series, attr: pd.Series, criterion_func) -> 
 
 
 
-def information_gain(Y: pd.Series, attr: pd.Series, criterion: str = "None") -> float:
+def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
     """
     Function to calculate the information gain using criterion (entropy, gini index or MSE)
 
@@ -134,7 +134,7 @@ def information_gain(Y: pd.Series, attr: pd.Series, criterion: str = "None") -> 
     - ValueError: If the criterion is not one of 'entropy', 'gini', or 'mse'.
     """
 
-    if criterion == "None":
+    if (not criterion):
         # If the criterion is not provided, use 'mse' for real values and 'entropy' for discrete values
         if check_ifreal(Y):
             criterion = 'mse'
