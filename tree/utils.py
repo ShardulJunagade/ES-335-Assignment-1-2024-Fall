@@ -55,7 +55,7 @@ def entropy(Y: pd.Series) -> float:
     value_counts = Y.value_counts()
     total_count = Y.size
     prob = value_counts / total_count
-    entropy_value = -np.sum(prob * np.log2(prob + + 1e-10))
+    entropy_value = -np.sum(prob * np.log2(prob + 1e-10))
 
     return entropy_value
 
@@ -169,7 +169,7 @@ def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
 
     for value in attr.unique():
         Y_i = Y[attr == value]
-        total_criterion += Y_i.size / Y.size * criterion_func(Y_i)
+        total_criterion += (Y_i.size / Y.size) * criterion_func(Y_i)
 
     information_gain_value = criterion_func(Y) - total_criterion
 
