@@ -1,3 +1,5 @@
+ipykernel
+ipython
 numpy
 pandas
 matplotlib
@@ -6,3 +8,5 @@ scipy
 scikit-learn
 watermark
 tsfel
+langchain-groq
+python-dotenv
