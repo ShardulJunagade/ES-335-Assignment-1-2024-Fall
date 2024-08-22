@@ -85,9 +85,9 @@ print("Testing data shape: ",X_test.shape)
 
 
 # Save the data
-np.save("SavedDataset/Train/X_train.npy",X_train)
-np.save("SavedDataset/Test/X_test.npy",X_test)
-np.save("SavedDataset/Train/y_train.npy",y_train)
-np.save("SavedDataset/Test/y_test.npy",y_test)
+np.save("SavedDataset/Raw/X_train.npy",X_train)
+np.save("SavedDataset/Raw/X_test.npy",X_test)
+np.save("SavedDataset/Raw/y_train.npy",y_train)
+np.save("SavedDataset/Raw/y_test.npy",y_test)
 
 print("Data saved successfully!")
