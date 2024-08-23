@@ -81,6 +81,8 @@ def mse(Y: pd.Series) -> float:
 
     return mse_value
 
+
+
 def check_criteria(Y:pd.Series, criterion: str) -> str:
     """
     Function to check if the criterion is valid
@@ -94,18 +96,19 @@ def check_criteria(Y:pd.Series, criterion: str) -> str:
         else:
             my_criterion = 'entropy'
     elif criterion == "gini_index":
-        my_criterion = 'gini'
+        my_criterion = 'gini_index'
     else:
         raise ValueError("Criterion must be 'information_gain' or 'gini_index'.")
     
     criterion_funcs_map = {
         'entropy': entropy,
-        'gini': gini_index,
+        'gini_index': gini_index,
         'mse': mse
     }
     criterion_func = criterion_funcs_map[my_criterion]
 
     return my_criterion, criterion_func
+
 
 
 def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:

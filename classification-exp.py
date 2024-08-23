@@ -13,6 +13,6 @@ X, y = make_classification(
 
 # For plotting
 plt.scatter(X[:, 0], X[:, 1], c=y)
-
+plt.show()
 # Write the code for Q2 a) and b) below. Show your results.
 
