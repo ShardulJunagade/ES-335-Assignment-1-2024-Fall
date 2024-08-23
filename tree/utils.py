@@ -81,13 +81,11 @@ def mse(Y: pd.Series) -> float:
 
     return mse_value
 
-
-
-def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
+def check_criteria(Y:pd.Series, criterion: str) -> str:
     """
-    Function to find the optimal threshold for a real feature
+    Function to check if the criterion is valid
 
-    Returns the threshold value
+    Returns the criterion
     """
 
     if criterion == "information_gain":
@@ -99,13 +97,25 @@ def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
         my_criterion = 'gini'
     else:
         raise ValueError("Criterion must be 'information_gain' or 'gini_index'.")
-
+    
     criterion_funcs_map = {
         'entropy': entropy,
         'gini': gini_index,
         'mse': mse
     }
     criterion_func = criterion_funcs_map[my_criterion]
+
+    return my_criterion, criterion_func
+
+
+def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
+    """
+    Function to find the optimal threshold for a real feature
+
+    Returns the threshold value
+    """
+
+    my_criterion, criterion_func = check_criteria(Y, criterion)
 
     sorted_attr = attr.sort_values()
     # Find the split points by taking the average of consecutive values (midpoints)
@@ -143,23 +153,7 @@ def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
     - ValueError: If the criterion is not one of 'entropy', 'gini', or 'mse'.
     """
 
-    if criterion == "information_gain":
-        if check_ifreal(Y):
-            my_criterion = 'mse'
-        else:
-            my_criterion = 'entropy'
-    elif criterion == "gini_index":
-        my_criterion = 'gini'
-    else:
-        raise ValueError("Criterion must be 'information_gain' or 'gini_index'.")
-
-
-    criterion_funcs_map = {
-        'entropy': entropy,
-        'gini': gini_index,
-        'mse': mse
-    }
-    criterion_func = criterion_funcs_map[my_criterion]
+    my_criterion, criterion_func = check_criteria(Y, criterion)
 
     # If the attribute is real, find the split points and calculate the information gain for each split point
     if check_ifreal(attr):
@@ -226,7 +220,7 @@ def split_data(X: pd.DataFrame, y: pd.Series, attribute, value):
     """
 
     # Split the data based on a particular value of a particular attribute. You may use masking as a tool to split the data.
-
+    
     if check_ifreal(X[attribute]):
         X_left = X[X[attribute] <= value]
         X_right = X[X[attribute] > value]

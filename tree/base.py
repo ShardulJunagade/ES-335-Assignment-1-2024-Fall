@@ -48,6 +48,7 @@ class DecisionTree:
         self.max_depth = max_depth
         self.tree = None
 
+
     def fit(self, X: pd.DataFrame, y: pd.Series, depth: int = 0) -> None:
         """
         Function to train and construct the decision tree
@@ -56,7 +57,6 @@ class DecisionTree:
         # If you wish your code can have cases for different types of input and output data (discrete, real)
         # Use the functions from utils.py to find the optimal attribute to split upon and then construct the tree accordingly.
         # You may(according to your implemetation) need to call functions recursively to construct the tree.
-
 
         # If the depth exceeds max_depth or all the target values are the same, create a leaf node
         def build_tree(X: pd.DataFrame, y: pd.Series, depth: int) -> Node:            
@@ -83,7 +83,7 @@ class DecisionTree:
 
             X_left, y_left, X_right, y_right = split_data(X, y, best_attribute, best_value)
 
-            # If a valid split is not possible, return a leaf node
+            # If a valid split is not possible, create a leaf node
             if X_left.empty or X_right.empty:
                 if check_ifreal(y):
                     return Node(is_leaf=True, output=y.mean())
@@ -97,30 +97,6 @@ class DecisionTree:
 
         self.tree = build_tree(X, y, depth)
     
-    def predict_row(self, x: pd.Series) -> float:
-        """
-        Function to predict the output for a single row of input
-        """
-
-        # Traverse the tree you constructed to return the predicted value for the given input.
-
-        current_node = self.tree
-
-        while not current_node.is_leaf_node():
-            if check_ifreal(x[current_node.attribute]):
-                if x[current_node.attribute] <= current_node.value:
-                    current_node = current_node.left
-                else:
-                    current_node = current_node.right
-            else:
-                if x[current_node.attribute] == current_node.value:
-                    current_node = current_node.left
-                else:
-                    current_node = current_node.right
-
-        return current_node.output
-        
-
 
     def predict(self, X: pd.DataFrame) -> pd.Series:
         """
@@ -129,24 +105,29 @@ class DecisionTree:
 
         # Traverse the tree you constructed to return the predicted values for the given test inputs.
 
-        # def predict_single(node: Node, x: pd.Series) -> Union[float, str]:
-        #     if node.is_leaf_node():
-        #         return node.output
-        #     if check_ifreal(X[node.attribute]):
-        #         if x[node.attribute] <= node.value:
-        #             return predict_single(node.left, x)
-        #         else:
-        #             return predict_single(node.right, x)
-        #     else:
-        #         if x[node.attribute] == node.value:
-        #             return predict_single(node.left, x)
-        #         else:
-        #             return predict_single(node.right, x)
+        def predict_row(x: pd.Series) -> float:
+            """
+            Function to predict the output for a single row of input
+            """
 
-        # return X.apply(lambda x: predict_single(self.tree, x), axis=1)
-    
-        # return X.apply(self.predict_row, axis=1)
-        return pd.Series([self.predict_row(x) for _, x in X.iterrows()])
+            current_node = self.tree
+
+            while not current_node.is_leaf_node():
+                if check_ifreal(x[current_node.attribute]):
+                    if x[current_node.attribute] <= current_node.value:
+                        current_node = current_node.left
+                    else:
+                        current_node = current_node.right
+                else:
+                    if x[current_node.attribute] == current_node.value:
+                        current_node = current_node.left
+                    else:
+                        current_node = current_node.right
+
+            return current_node.output
+            
+        return pd.Series([predict_row(x) for _, x in X.iterrows()])
+
 
     def plot(self) -> None:
         """
