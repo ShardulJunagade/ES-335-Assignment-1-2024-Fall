@@ -27,20 +27,12 @@ def check_ifreal(y: pd.Series) -> bool:
     Returns True if the series has real (continuous) values, False otherwise (discrete).
     """
 
-    # If the data is float, it's real
     if pd.api.types.is_float_dtype(y):
         return True
-
-    # If the data is integer, it can be either real or discrete
     if pd.api.types.is_integer_dtype(y):
-        # If the integer values are limited in number and not too many unique values, it's discrete
         return len(y.unique()) > 10
-
-    # If the data is string, it's discrete
     if pd.api.types.is_string_dtype(y):
         return False
-    
-    # Else, it's discrete
     return False
 
 
@@ -91,12 +83,29 @@ def mse(Y: pd.Series) -> float:
 
 
 
-def real_feature_thresholding(Y: pd.Series, attr: pd.Series, criterion_func) -> float:
+def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
     """
     Function to find the optimal threshold for a real feature
 
     Returns the threshold value
     """
+
+    if criterion == "information_gain":
+        if check_ifreal(Y):
+            my_criterion = 'mse'
+        else:
+            my_criterion = 'entropy'
+    elif criterion == "gini_index":
+        my_criterion = 'gini'
+    else:
+        raise ValueError("Criterion must be 'information_gain' or 'gini_index'.")
+
+    criterion_funcs_map = {
+        'entropy': entropy,
+        'gini': gini_index,
+        'mse': mse
+    }
+    criterion_func = criterion_funcs_map[my_criterion]
 
     sorted_attr = attr.sort_values()
     # Find the split points by taking the average of consecutive values (midpoints)
@@ -134,27 +143,27 @@ def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
     - ValueError: If the criterion is not one of 'entropy', 'gini', or 'mse'.
     """
 
-    if (not criterion):
-        # If the criterion is not provided, use 'mse' for real values and 'entropy' for discrete values
+    if criterion == "information_gain":
         if check_ifreal(Y):
-            criterion = 'mse'
+            my_criterion = 'mse'
         else:
-            criterion = 'entropy'
+            my_criterion = 'entropy'
+    elif criterion == "gini_index":
+        my_criterion = 'gini'
+    else:
+        raise ValueError("Criterion must be 'information_gain' or 'gini_index'.")
 
-    criterion_funcs = {
+
+    criterion_funcs_map = {
         'entropy': entropy,
         'gini': gini_index,
         'mse': mse
     }
-    
-    if criterion not in criterion_funcs:
-        raise ValueError("Criterion must be one of 'entropy', 'gini', or 'mse'")
-    
-    criterion_func = criterion_funcs[criterion]
+    criterion_func = criterion_funcs_map[my_criterion]
 
     # If the attribute is real, find the split points and calculate the information gain for each split point
     if check_ifreal(attr):
-        threshold = real_feature_thresholding(Y, attr, criterion_func)
+        threshold = find_optimal_threshold(Y, attr, criterion)
         if threshold is None:
             return 0  # No valid threshold found
         Y_left = Y[attr <= threshold]
@@ -177,7 +186,7 @@ def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
 
 
 
-def opt_split_attribute(X: pd.DataFrame, y: pd.Series, features: pd.Series, criterion: str = "None"):
+def opt_split_attribute(X: pd.DataFrame, y: pd.Series, features: pd.Series, criterion: str) -> str:
     """
     Function to find the optimal attribute to split about.
     If needed you can split this function into 2, one for discrete and one for real valued features.
