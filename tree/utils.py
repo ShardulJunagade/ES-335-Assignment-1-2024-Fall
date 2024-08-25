@@ -15,8 +15,12 @@ def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
     Returns the one hot encoded data
     """
 
-    X_encoded = pd.get_dummies(X)
-    return X_encoded
+    for column in X.columns:
+        if (not check_ifreal(X[column])) & (len(X[column].unique()) > 2):
+            X = pd.concat([X, pd.get_dummies(X[column], prefix=column)], axis=1)
+            X.drop(column, axis=1, inplace=True)
+
+    return X
 
 
 
@@ -27,19 +31,17 @@ def check_ifreal(y: pd.Series) -> bool:
     Returns True if the series has real (continuous) values, False otherwise (discrete).
     """
 
-    # if dtype is "category", it is a discrete variable
+    # # if dtype is "category", it is a discrete variable
     if pd.api.types.is_categorical_dtype(y):
         return False
-    else: 
-        return True
 
-    # if pd.api.types.is_float_dtype(y):
-    #     return True
-    # if pd.api.types.is_integer_dtype(y):
-    #     return len(y.unique()) > 10
-    # if pd.api.types.is_string_dtype(y):
-    #     return False
-    # return False
+    if pd.api.types.is_float_dtype(y):
+        return True
+    if pd.api.types.is_integer_dtype(y):
+        return len(y.unique()) > 5
+    if pd.api.types.is_string_dtype(y):
+        return False
+    return False
 
 
 
