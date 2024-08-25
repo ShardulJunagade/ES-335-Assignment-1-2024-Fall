@@ -24,7 +24,7 @@ def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
 
 
 
-def check_ifreal(y: pd.Series) -> bool:
+def check_ifreal(y: pd.Series, real_distinct_threshold: int = 6) -> bool:
     """
     Function to check if the given series has real or discrete values
 
@@ -34,11 +34,12 @@ def check_ifreal(y: pd.Series) -> bool:
     # # if dtype is "category", it is a discrete variable
     if pd.api.types.is_categorical_dtype(y):
         return False
-
+    if pd.api.types.is_bool_dtype(y):
+        return False
     if pd.api.types.is_float_dtype(y):
         return True
     if pd.api.types.is_integer_dtype(y):
-        return len(y.unique()) > 5
+        return len(y.unique()) >= real_distinct_threshold
     if pd.api.types.is_string_dtype(y):
         return False
     return False
