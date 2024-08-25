@@ -27,13 +27,19 @@ def check_ifreal(y: pd.Series) -> bool:
     Returns True if the series has real (continuous) values, False otherwise (discrete).
     """
 
-    if pd.api.types.is_float_dtype(y):
-        return True
-    if pd.api.types.is_integer_dtype(y):
-        return len(y.unique()) > 10
-    if pd.api.types.is_string_dtype(y):
+    # if dtype is "category", it is a discrete variable
+    if pd.api.types.is_categorical_dtype(y):
         return False
-    return False
+    else: 
+        return True
+
+    # if pd.api.types.is_float_dtype(y):
+    #     return True
+    # if pd.api.types.is_integer_dtype(y):
+    #     return len(y.unique()) > 10
+    # if pd.api.types.is_string_dtype(y):
+    #     return False
+    # return False
 
 
 
