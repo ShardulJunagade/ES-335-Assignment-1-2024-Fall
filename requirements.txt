@@ -10,4 +10,5 @@ watermark
 tsfel
 langchain-groq
 python-dotenv
-fetch_ucirepo 
+fetch_ucirepo
+graphviz

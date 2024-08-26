@@ -131,6 +131,10 @@ def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
 
     sorted_attr = attr.sort_values()
     # Find the split points by taking the average of consecutive values (midpoints)
+    if sorted_attr.size == 1:
+        return None
+    elif sorted_attr.size == 2:
+        return (sorted_attr.sum()) / 2
     split_points = (sorted_attr[:-1] + sorted_attr[1:]) / 2
 
     best_threshold = None
