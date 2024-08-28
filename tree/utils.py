@@ -31,7 +31,6 @@ def check_ifreal(y: pd.Series, real_distinct_threshold: int = 6) -> bool:
     Returns True if the series has real (continuous) values, False otherwise (discrete).
     """
 
-    # # if dtype is "category", it is a discrete variable
     if pd.api.types.is_categorical_dtype(y):
         return False
     if pd.api.types.is_bool_dtype(y):
@@ -80,9 +79,9 @@ def gini_index(Y: pd.Series) -> float:
 
 def mse(Y: pd.Series) -> float:
     """
-    Function to calculate the root-mean-squared-error(rmse)
+    Function to calculate the mean squared error (mse)
 
-    rmse = sqrt(sum((y_i - y)^2) / n)
+    mse = sum((y_i - y)^2) / n
     """
 
     Y_mean = Y.mean()
@@ -92,7 +91,7 @@ def mse(Y: pd.Series) -> float:
 
 
 
-def check_criteria(Y:pd.Series, criterion: str) -> str:
+def check_criteria(Y:pd.Series, criterion: str):
     """
     Function to check if the criterion is valid
 
@@ -159,7 +158,7 @@ def find_optimal_threshold(Y: pd.Series, attr: pd.Series, criterion) -> float:
 
 
 
-def information_gain(Y: pd.Series, attr: pd.Series, criterion = None) -> float:
+def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
     """
     Function to calculate the information gain using criterion (entropy, gini index or MSE)
 

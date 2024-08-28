@@ -64,13 +64,13 @@ class DecisionTree:
         # Use the functions from utils.py to find the optimal attribute to split upon and then construct the tree accordingly.
         # You may(according to your implemetation) need to call functions recursively to construct the tree.
 
-        # If the depth exceeds max_depth or all the target values are the same, create a leaf node
         def build_tree(X: pd.DataFrame, y: pd.Series, depth: int) -> Node:
 
             my_criterion, criterion_func = check_criteria(y, self.criterion)
             criterion_value = criterion_func(y)
             criterion_pair = (my_criterion, criterion_value)     
 
+            # If the depth exceeds max_depth or all the target values are the same, create a leaf node
             if depth >= self.max_depth or y.nunique() == 1:
                 if check_ifreal(y):
                     return Node(is_leaf=True, output=np.round(y.mean(),4), criterion_pair=criterion_pair)
