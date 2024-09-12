@@ -71,6 +71,7 @@ for criteria in ["information_gain", "gini_index"]:
         print("Precision: ", precision(y_hat, y, cls))
         print("Recall: ", recall(y_hat, y, cls))
 
+
 # Test case 4
 # Discrete Input and Real Output
 

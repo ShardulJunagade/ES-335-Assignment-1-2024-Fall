@@ -84,3 +84,12 @@ print("Testing data shape: ",X_test.shape)
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
+# Save the data
+if not os.path.exists("Saved_Datasets/Raw_Acc_Data"):
+    os.makedirs("Saved_Datasets/Raw_Acc_Data")
+np.save("Saved_Datasets/Raw_Acc_Data/X_train.npy",X_train)
+np.save("Saved_Datasets/Raw_Acc_Data/X_test.npy",X_test)
+np.save("Saved_Datasets/Raw_Acc_Data/y_train.npy",y_train)
+np.save("Saved_Datasets/Raw_Acc_Data/y_test.npy",y_test)
+
+print("Data saved successfully!")
